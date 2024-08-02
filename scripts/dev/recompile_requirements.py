@@ -363,8 +363,14 @@ def build_requirements(name):
             args = ['--all'] if name == 'tox' else []
             proc = run_pip(tmpdir, 'freeze', *args, stdout=subprocess.PIPE)
             reqs = proc.stdout.decode('utf-8')
-            if utils.ON_CI:
+            if utils.ON_CI or True:
                 print(reqs.strip())
+                if "autocommand==" in reqs:
+                    venv_python = get_venv_python(tmpdir)
+                    subprocess.run(
+                        [venv_python, '-c', "import autocommand; print(autocommand.__file__)"],
+                        check=True,
+                    )
 
     outfile = get_outfile(name)
 
